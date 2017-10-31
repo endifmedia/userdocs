@@ -15,8 +15,8 @@
  * @wordpress-plugin
  * Plugin Name:       UserDocs
  * Plugin URI:        userdocsforwordpress.com
- * Description:       The best documentation plugin for WordPress. To use: add shortcode [userdocs] in a sidebar widget.
- * Version:           0.9.1
+ * Description:       The best documentation plugin for WordPress.
+ * Version:           0.9.4
  * Author:            Ethan Allen
  * Author URI:        https://endif.media
  * License:           GPL-2.0+
@@ -38,18 +38,6 @@ function activate_userdocs() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-userdocs-activator.php';
 	Userdocs_Activator::activate();
 }
-
-/**
- * The code that runs during plugin deactivation.
- * This action is documented in includes/class-userdocs-deactivator.php
- */
-function deactivate_userdocs() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-userdocs-deactivator.php';
-	Userdocs_Deactivator::deactivate();
-}
-
-register_activation_hook( __FILE__, 'activate_userdocs' );
-//register_deactivation_hook( __FILE__, 'deactivate_userdocs' );
 
 /**
  * The core plugin class that is used to define internationalization,

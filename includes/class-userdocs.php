@@ -119,12 +119,6 @@ class Userdocs {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-userdocs-public.php';
 
-		/**
-		 * The class responsible for displaying and saving plugin settings in the admin-facing
-		 * side of the site.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/plugin-options.php';
-
 		$this->loader = new Userdocs_Loader();
 
 	}
@@ -180,6 +174,7 @@ class Userdocs {
 		$this->loader->add_filter('generate_rewrite_rules',$plugin_public, 'slug_rewrite');
 		$this->loader->add_action('init', $plugin_public, 'register_shortcodes' );
 		$this->loader->add_filter('the_content', $plugin_public, 'filter_archive_content');
+		$this->loader->add_filter('get_the_archive_title', $plugin_public, 'filter_archive_title');
 		add_filter('widget_text', 'do_shortcode');
 	}
 

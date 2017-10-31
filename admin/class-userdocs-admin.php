@@ -51,7 +51,6 @@ class Userdocs_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-		$this->options = new UserDocs_Plugin_Options('UserDocs', $this->plugin_name . '_settings', $this->plugin_name . '_settings');
 
 	}
 
@@ -108,6 +107,7 @@ class Userdocs_Admin {
 			'meta_box_cb'                => false,
 			'show_in_nav_menus'          => true,
 			'show_tagcloud'              => false,
+			'rewrite'                    => array('slug' => 'topics', 'with_front' => false)
 		);
 		register_taxonomy( 'userdocs_taxonomy', array( 'userdocs' ), $args );
 	}
@@ -125,143 +125,9 @@ class Userdocs_Admin {
     }
 
 	/**
-	 * Register the menu for the admin area.
-	 *
-	 * @since    1.0.0
+	 * Set up metaboxes.
 	 */
-	public function create_menu(){
-		add_submenu_page(
-			'edit.php?post_type=' . $this->plugin_name,
-			__('Settings', $this->plugin_name),
-			__('Settings', $this->plugin_name),
-			'manage_options',
-			$this->plugin_name . '_settings',
-			array($this, 'options_page'));
-	}
-
-	/**
-	 * Function that displays the options form.
-	 *
-	 * @since    1.0.0
-	 */
-	public function options_page() {
-
-		$options = $this->option_fields();
-		$active_tab = isset($_GET[ 'tab' ]) ? $_GET[ 'tab' ] : 'general';
-		$this->options->render_form($options, sanitize_text_field($active_tab));
-
-	}
-
-	/**
-	 * Function that builds the options array for Plugin_Settings class.
-	 *
-	 * @since    1.0.0
-	 */
-	public function option_fields() {
-		$options = array(
-			/** Payment Gateways Settings */
-			'general' => apply_filters($this->plugin_name . '_settings_general',
-				array(
-					'userdoc_name' => array(
-						'id'   => 'userdoc_name',
-						'label' => __( 'UserDoc name', $this->plugin_name ),
-						//'desc' => __( 'Upload or choose a logo to be displayed at the top of PDF invoices and quotes.', 'invoice-app' ),
-						'type' => 'text',
-					),
-					'userdoc_singular_name' => array(
-						'id'   => 'userdoc_singular_name',
-						'label' => __( 'Singular name', $this->plugin_name ),
-						//'desc' => __( '', '' ),
-						'type' => 'text',
-					),
-					'userdoc_menu_name' => array(
-						'id'   => 'userdoc_menu_name',
-						'label' => __( 'Menu name', $this->plugin_name ),
-						//'desc' => __( '', 'invoice-app' ),
-						'type' => 'text',
-					),
-					'userdoc_all_items' => array(
-						'id'   => 'userdoc_all_items',
-						'label' => __( 'All items menu label', $this->plugin_name ),
-						//'desc' => __( '', '' ),
-						'type' => 'text',
-					),
-					'userdoc_add_new_item' => array(
-						'id'   => 'userdoc_add_new_item',
-						'label' => __( 'New post message', $this->plugin_name ),
-						//'desc' => __( '', '' ),
-						'type' => 'text',
-					),
-					'userdoc_edit_item' => array(
-						'id'   => 'userdoc_edit_item',
-						'label' => __( 'Edit items message', $this->plugin_name ),
-						//'desc' => __( '', '' ),
-						'type' => 'text',
-					),
-					'userdoc_not_found' => array(
-						'id'   => 'userdoc_not_found',
-						'label' => __( 'No posts found message', $this->plugin_name ),
-						//'desc' => __( '', '' ),
-						'type' => 'text',
-					),
-					'userdoc_view_item' => array(
-						'id'   => 'userdoc_label',
-						'label' => __( 'Label for UserDocs', $this->plugin_name ),
-						'desc' => __( '', '' ),
-						'type' => 'text',
-					),
-				)
-			),
-			/** Payment Gateways Settings */
-			'categories' => apply_filters($this->plugin_name . '_settings_taxonomies',
-				array(
-					'userdoc_tax_name' => array(
-						'id'   => 'userdoc_tax_name',
-						'label' => __( 'Doc category', $this->plugin_name ),
-						'desc' => __( 'What are you documenting? ie. products, softwares, bike plans',  $this->plugin_name ),
-						'type' => 'text',
-					),
-					'userdoc_tax_singular_name' => array(
-						'id'   => 'userdoc_tax_singular_name',
-						'label' => __( 'Doc category singular name', $this->plugin_name ),
-						'desc' => __( 'Singular version of the above. ie. product, software, bike plan',  $this->plugin_name ),
-						'type' => 'text',
-					),
-					'userdoc_tax_menu_name' => array(
-						'id'   => 'userdoc_tax_menu_name',
-						'label' => __( 'Menu name', $this->plugin_name ),
-						'desc' => __( 'This text will show up in the menu to the left.', $this->plugin_name ),
-						'type' => 'text',
-					),
-					'userdoc_tax_add_new_item' => array(
-						'id'   => 'userdoc_tax_add_new_item',
-						'label' => __( 'Add new item text', $this->plugin_name ),
-						'type' => 'text',
-					),
-					'userdoc_tax_edit_item' => array(
-						'id'   => 'userdoc_tax_edit_item',
-						'label' => __( 'Edit item text', $this->plugin_name ),
-						'type' => 'text',
-					),
-					'userdoc_tax_update_item' => array(
-						'id'   => 'userdoc_tax_update_item',
-						'label' => __( 'Update item text', $this->plugin_name ),
-						'type' => 'text',
-					),
-					'userdoc_tax_not_found' => array(
-						'id'   => 'userdoc_tax_not_found',
-						'label' => __( 'No categories found message', $this->plugin_name ),
-						'desc' => __( 'This message will display if there are no categories in the list.', '' ),
-						'type' => 'text',
-					),
-				)
-			),
-		);
-		return apply_filters( $this->plugin_name . '_settings_group', $options );
-	}
-
 	public function setup_userdocs_metaboxes(){
-		$plugin_settings = get_option($this->plugin_name . '_settings');
 		add_meta_box('UserDocs', "This document belongs with&hellip;", array(&$this, 'taxonomy_details'), 'userdocs', 'side');
 	}
 

@@ -3,7 +3,7 @@ Contributors: ENDif Media
 Tags: project management, user documentation, versioning, help, help desk, helpdesk, support
 Requires at least: 3.0.1
 Tested up to: 4.8.2
-Stable tag: 0.9.2
+Stable tag: 0.9.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,6 +37,12 @@ A: Clear your site permalinks by visiting Settings > Permalinks in the WordPress
 4. Topics.
 
 == Changelog ==
+
+= 0.94 =
+* Fix rewrite issues where topics were'nt flushing properly.
+* Add new shortcode [userdocs_support] to display text based support help box.
+* Add more support for overriding userdocs cpt archive page title via hook.
+* Add document count for each topic.
 
 = 0.9.1 = 
 * Flush rewrites on plugin activation

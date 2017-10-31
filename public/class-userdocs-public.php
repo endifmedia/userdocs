@@ -78,33 +78,12 @@ class Userdocs_Public {
 	}
 
 	/**
-	 * Register the JavaScript for the public-facing side of the site.
-	 *
-	 * @since    1.0.0
-	 */
-	/*public function enqueue_scripts() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Userdocs_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Userdocs_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
-		//wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/userdocs-public.js', array( 'jquery' ), $this->version, false );
-
-	//}
-
-	/**
 	 * Add shortcode support.
 	 */
 	public function register_shortcodes(){
-		add_shortcode('userdocs', array($this, 'userdocs_shortcode'));
+		add_shortcode('userdocs', array($this, 'userdocs_shortcode')); //backwards compatability
+		add_shortcode('userdocs_menu', array($this, 'userdocs_shortcode'));
+		add_shortcode('userdocs_support', array($this, 'userdocs_support_shortcode'));
 	}
 
 	/**
@@ -118,43 +97,59 @@ class Userdocs_Public {
 			return $content;
 		}
 	}
+
+	/**
+	 * Filter out title from links.
+	 * @param $title
+	 *
+	 * @return mixed
+	 */
+	public function filter_archive_title($title){
+		if (is_post_type_archive('userdocs') && !is_tax('userdocs_taxonomy')) {
+			return __('All Documentation', $this->plugin_name);
+		}
+		if (is_tax('userdocs_taxonomy')) {
+			$queried_object = get_queried_object();
+			return $queried_object->name;
+		}
+	}
+
 	/**
 	 * Function that handles shortcode display.
 	 */
 	function userdocs_shortcode(){
 		$cats = get_terms('userdocs_taxonomy');
-		echo '<h4><a href="' . esc_attr(home_url('userdocs')) .'">'. __('Topics'). '</a></h4>';
+		echo '<div class="userdocs-topics-container"><h4><a href="' . esc_attr(home_url('userdocs')) .'">' . __('All Topics', $this->plugin_name) . '</a></h4>';
 		foreach ($cats as $cat) {
-			echo '<a href="' . get_category_link($cat->term_id) . '">' . $cat->name . '</a><br>';
+			echo '<a href="' . get_category_link($cat->term_id) . '">' . $cat->name . '</a> (' . $cat->count . ')<br>';
 		}
+		echo '</div>';
 	}
 
 	/**
-	 * @param $template
+	 * Function that handles support shortcode display.
 	 *
-	 * @return string
+	 * @param $atts
 	 */
-	/*public function switch_to_post_type_template($template){
-		global $post;
+	function userdocs_support_shortcode($atts){
 
-		if ($post->post_type == 'userdocs'){
-			$plugindir = dirname( __FILE__ );
-			$filter = current_filter();
-			switch ($filter){
-				case 'single_template':
-					if(file_exists($plugindir . '/templates/single-userdocs.php'))
-						return $plugindir . '/templates/single-userdocs.php';
-					break;
+		extract(shortcode_atts(
+			array(
+				'excerpt' => __('Can\'t find an answer or stuck on any of the docs? Email me and I\'ll do my best to help', $this->plugin_name),
+				'link' => '',
+				'link_text' => ''
+				), $atts, 'userdocs_support'
+			)
+		);
 
-				case 'archive_template':
-					if(file_exists($plugindir . '/templates/archive-userdocs.php'))
-						return $plugindir . '/templates/archive-userdocs.php';
-					break;
-			}
-
+		echo '<div class="userdocs-topics-container">';
+		echo '<h4>' . __('Support', $this->plugin_name) . '</h4>';
+		echo '<p>' . esc_html($excerpt) . '</p>';
+		if (!empty($link)) {
+			echo '<p><a href="' . esc_url( $link ) . '">' . esc_html($link_text) . ' &rarr;</a></p>';
 		}
-		return $template;
-	}*/
+		echo '</div>';
+	}
 
 	/**
 	 * Change default urls for UserDocs.
