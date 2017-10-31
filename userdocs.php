@@ -39,8 +39,6 @@ function activate_userdocs() {
 	Userdocs_Activator::activate();
 }
 
-register_activation_hook( __FILE__, 'activate_userdocs' );
-
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
